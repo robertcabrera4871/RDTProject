@@ -27,12 +27,12 @@ public class ServerThread extends Thread{
         while(eof == false){
             try {
 
-            byte[] buf = new byte[150];
+            byte[] buf = new byte[500];
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             socket.receive(packet);
             if(firstRequest){ firstRequest(packet);}
 
-            String txtLine = getData();
+            String txtLine = packetSeq++ + getData();
             buf = txtLine.getBytes();
 
             InetAddress clientIP = packet.getAddress();
@@ -45,15 +45,14 @@ public class ServerThread extends Thread{
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("End of file has been reached or an error has occurred");
-                eof = true;
             }
         }
     }
 
     public String getData() throws IOException {
-        String txtLine;
+        String txtLine = "";
         txtLine = in.readLine();
-        if(in.readLine() == null){
+        if(txtLine == null){
             in.close();
             eof = true;
             txtLine = "End of file has been reached";
