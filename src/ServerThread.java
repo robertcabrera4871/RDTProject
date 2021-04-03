@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -26,13 +25,12 @@ public class ServerThread extends Thread{
     public void run(){
         while(eof == false){
             try {
-
             byte[] buf = new byte[500];
             DatagramPacket packet = new DatagramPacket(buf, buf.length);
             socket.receive(packet);
             if(firstRequest){ firstRequest(packet);}
 
-            String txtLine = packetSeq++ + getData();
+            String txtLine = packetSeq + " " + getData();
             buf = txtLine.getBytes();
 
             InetAddress clientIP = packet.getAddress();
@@ -40,11 +38,11 @@ public class ServerThread extends Thread{
 
             packet = new DatagramPacket(buf, buf.length, clientIP, port);
             socket.send(packet);
-            System.out.println("packet " + packetSeq + " attempting to send");
+            System.out.println("packet " + packetSeq++ + " attempting to send");
 
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("End of file has been reached or an error has occurred");
+                System.out.println("An error has occurred");
             }
         }
     }
